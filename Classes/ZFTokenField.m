@@ -8,8 +8,10 @@
 
 #import "ZFTokenField.h"
 
+#define ZF_SYMBOL @"\u200B"
+
 @interface ZFTokenTextField ()
-- (NSString *)rawText;
+
 @end
 
 @implementation ZFTokenTextField
@@ -18,7 +20,7 @@
 {
     if ([text isEqualToString:@""]) {
         if (((ZFTokenField *)self.superview).numberOfToken > 0) {
-            text = @"\u200B";
+            text = [NSString stringWithFormat:@"%@%@", ZF_SYMBOL, ZF_SYMBOL];
         }
     }
     [super setText:text];
@@ -26,7 +28,7 @@
 
 - (NSString *)text
 {
-    return [super.text stringByReplacingOccurrencesOfString:@"\u200B" withString:@""];
+    return [super.text stringByReplacingOccurrencesOfString:ZF_SYMBOL withString:@""];
 }
 
 - (NSString *)rawText
@@ -156,6 +158,13 @@
     return [self.tokenViews indexOfObject:view];
 }
 
+- (UIView *)tokenViewAtIndex:(NSUInteger)index {
+    if (index >= self.tokenViews.count) {
+        return nil;
+    }
+    return self.tokenViews[index];
+}
+
 #pragma mark - Private
 
 - (void)enumerateItemRectsUsingBlock:(void (^)(CGRect itemRect))block
@@ -181,6 +190,7 @@
         if ([token isKindOfClass:[ZFTokenTextField class]]) {
             UITextField *textField = (UITextField *)token;
             CGSize size = [textField sizeThatFits:(CGSize){CGRectGetWidth(self.bounds), lineHeight}];
+            size.width += 14;
             size.height = lineHeight;
             if (size.width > CGRectGetWidth(self.bounds)) {
                 size.width = CGRectGetWidth(self.bounds);
@@ -222,10 +232,13 @@
 
 - (void)textFieldDidChange:(ZFTokenTextField *)textField
 {
-    if ([[textField rawText] isEqualToString:@""]) {
-        textField.text = @"\u200B";
+    if (textField.rawText.length == 2 && [textField.rawText hasPrefix:ZF_SYMBOL] && ![textField.rawText hasPrefix:[NSString stringWithFormat:@"%@%@", ZF_SYMBOL, ZF_SYMBOL]]) {
+        textField.text = [NSString stringWithFormat:@"%@%@", ZF_SYMBOL, textField.rawText];
+    }
+    else if ([[textField rawText] isEqualToString:@""]) {
+        textField.text = [NSString stringWithFormat:@"%@%@", ZF_SYMBOL, ZF_SYMBOL];
         
-        if ([self.tempTextFieldText isEqualToString:@"\u200B"]) {
+        if ([self.tempTextFieldText isEqualToString:ZF_SYMBOL]) {
             if (self.tokenViews.count > 1) {
                 NSUInteger removeIndex = self.tokenViews.count - 2;
                 [self.tokenViews[removeIndex] removeFromSuperview];

@@ -11,6 +11,7 @@
 @class ZFTokenField;
 
 @interface ZFTokenTextField : UITextField
+- (NSString *)rawText;
 @end
 
 @protocol ZFTokenFieldDataSource <NSObject>
@@ -41,5 +42,6 @@
 - (void)reloadData;
 - (NSUInteger)numberOfToken;
 - (NSUInteger)indexOfTokenView:(UIView *)view;
+- (UIView *)tokenViewAtIndex:(NSUInteger)index;
 
 @end
