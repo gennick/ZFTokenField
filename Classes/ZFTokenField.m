@@ -16,10 +16,24 @@
 
 @implementation ZFTokenTextField
 
+- (ZFTokenField *)tokenField:(UIView *)v {
+    if ([v isKindOfClass:[ZFTokenField class]]) {
+        return (ZFTokenField *)v;
+    }
+    else {
+        if (!v.superview) {
+            return nil;
+        }
+        else {
+            return [self tokenField:v.superview];
+        }
+    }
+}
+
 - (void)setText:(NSString *)text
 {
     if ([text isEqualToString:@""]) {
-        if (((ZFTokenField *)self.superview).numberOfToken > 0) {
+        if ([self tokenField:self.superview].numberOfToken > 0) {
             text = [NSString stringWithFormat:@"%@%@", ZF_SYMBOL, ZF_SYMBOL];
         }
     }
@@ -49,6 +63,7 @@
 @end
 
 @interface ZFTokenField () <UITextFieldDelegate>
+@property (nonatomic, strong) UIScrollView *textFieldContainer;
 @property (nonatomic, strong) ZFTokenTextField *textField;
 @property (nonatomic, strong) NSMutableArray *tokenViews;
 
@@ -84,6 +99,8 @@
 {
     self.clipsToBounds = YES;
     [self addTarget:self action:@selector(focusOnTextField) forControlEvents:UIControlEventTouchUpInside];
+    
+    self.textFieldContainer = [[UIScrollView alloc] init];
     
     self.textField = [[ZFTokenTextField alloc] init];
     self.textField.borderStyle = UITextBorderStyleNone;
@@ -124,6 +141,9 @@
 
 - (void)reloadData
 {
+    // clear textFieldContainer
+    [self.textField removeFromSuperview];
+    
     // clear
     for (UIView *view in self.tokenViews) {
         [view removeFromSuperview];
@@ -141,8 +161,11 @@
     }
     
     [self.tokenViews addObject:self.textField];
-    [self addSubview:self.textField];
-    self.textField.frame = (CGRect) {0,0,50,[self.dataSource lineHeightForTokenInField:self]};
+    [self.textFieldContainer addSubview:self.textField];
+    [self addSubview:self.textFieldContainer];
+    
+    self.textFieldContainer.frame = (CGRect) {0,0,50,[self.dataSource lineHeightForTokenInField:self]};
+    self.textField.frame = (CGRect) {0,0,self.textFieldContainer.frame.size.width,self.textFieldContainer.frame.size.height};
     
     [self invalidateIntrinsicContentSize];
     [self.textField setText:@""];
@@ -195,7 +218,9 @@
             if (size.width > CGRectGetWidth(self.bounds)) {
                 size.width = CGRectGetWidth(self.bounds);
             }
-            token.frame = (CGRect){{x, y}, size};
+            
+            self.textFieldContainer.frame = (CGRect){{x, y}, size};
+            token.frame = (CGRect){{0, 0}, size};
         }
         
         block((CGRect){x, y, tokenWidth, token.frame.size.height});
