@@ -160,9 +160,11 @@
         }
     }
     
-    [self.tokenViews addObject:self.textField];
-    [self.textFieldContainer addSubview:self.textField];
-    [self addSubview:self.textFieldContainer];
+    if (!self.hideTextField) {
+        [self.tokenViews addObject:self.textField];
+        [self.textFieldContainer addSubview:self.textField];
+        [self addSubview:self.textFieldContainer];
+    }
     
     self.textFieldContainer.frame = (CGRect) {0,0,50,[self.dataSource lineHeightForTokenInField:self]};
     self.textField.frame = (CGRect) {0,0,self.textFieldContainer.frame.size.width,self.textFieldContainer.frame.size.height};

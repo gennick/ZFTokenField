@@ -39,6 +39,8 @@
 
 @property (nonatomic, strong, readonly) ZFTokenTextField *textField;
 
+@property (nonatomic, assign) BOOL hideTextField;
+
 - (void)reloadData;
 - (NSUInteger)numberOfToken;
 - (NSUInteger)indexOfTokenView:(UIView *)view;
