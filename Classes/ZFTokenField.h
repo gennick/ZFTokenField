@@ -30,6 +30,7 @@
 - (void)tokenFieldDidBeginEditing:(ZFTokenField *)tokenField;
 - (BOOL)tokenFieldShouldEndEditing:(ZFTokenField *)textField;
 - (void)tokenFieldDidEndEditing:(ZFTokenField *)tokenField;
+- (void)tokenTextFieldFrameChanged:(ZFTokenTextField *)tokenTextField;
 @end
 
 @interface ZFTokenField : UIControl

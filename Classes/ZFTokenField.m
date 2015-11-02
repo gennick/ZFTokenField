@@ -221,8 +221,16 @@
                 size.width = CGRectGetWidth(self.bounds);
             }
             
+            CGRect old = self.textFieldContainer.frame;
+            
             self.textFieldContainer.frame = (CGRect){{x, y}, size};
             token.frame = (CGRect){{0, 0}, size};
+            
+            if (!CGRectEqualToRect(old, self.textFieldContainer.frame)) {
+                if ([self.delegate respondsToSelector:@selector(tokenTextFieldFrameChanged:)]) {
+                    [self.delegate tokenTextFieldFrameChanged:(ZFTokenTextField *)token];
+                }
+            }
         }
         
         block((CGRect){x, y, tokenWidth, token.frame.size.height});

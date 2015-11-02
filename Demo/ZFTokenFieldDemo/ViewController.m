@@ -95,4 +95,8 @@
     return NO;
 }
 
+- (void)tokenTextFieldFrameChanged:(ZFTokenTextField *)tokenTextField {
+    NSLog(@"frame changed");
+}
+
 @end
