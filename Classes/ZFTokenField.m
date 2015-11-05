@@ -101,6 +101,7 @@
     [self addTarget:self action:@selector(focusOnTextField) forControlEvents:UIControlEventTouchUpInside];
     
     self.textFieldContainer = [[UIScrollView alloc] init];
+    self.textFieldContainer.scrollEnabled = NO;
     
     self.textField = [[ZFTokenTextField alloc] init];
     self.textField.borderStyle = UITextBorderStyleNone;
