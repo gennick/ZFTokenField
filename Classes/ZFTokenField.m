@@ -216,7 +216,12 @@
         if ([token isKindOfClass:[ZFTokenTextField class]]) {
             UITextField *textField = (UITextField *)token;
             CGSize size = [textField sizeThatFits:(CGSize){CGRectGetWidth(self.bounds), lineHeight}];
-            size.width += 14;
+            if (!self.hideTextField) {
+                size.width += 14;
+            }
+            else {
+                size.width = 0;
+            }
             size.height = lineHeight;
             if (size.width > CGRectGetWidth(self.bounds)) {
                 size.width = CGRectGetWidth(self.bounds);
