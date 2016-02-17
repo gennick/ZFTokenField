@@ -50,16 +50,6 @@
     return super.text;
 }
 
-- (void)addGestureRecognizer:(UIGestureRecognizer *)gestureRecognizer
-{
-    //Prevent zooming
-    if ([gestureRecognizer isKindOfClass:[UILongPressGestureRecognizer class]]) {
-        gestureRecognizer.enabled = NO;
-    }
-    [super addGestureRecognizer:gestureRecognizer];
-    return;
-}
-
 @end
 
 @interface ZFTokenField () <UITextFieldDelegate>
